@@ -58,4 +58,30 @@ export class ReservationController {
       }
     }
   }
+
+  async update(req: Request, res: Response): Promise<void> {
+    try {
+      if (!req.params.id) throw new Error("Id is null");
+      if (!req.body) throw new Error("Data is null");
+      const { date, status, guest, room, priceTotal } = req.body;
+      const reservation: Omit<Reservation, "id"> = {
+        date,
+        status,
+        guest,
+        room,
+        priceTotal,
+      };
+      await this.reservationUsesCases.update(req.params.id, reservation);
+
+      res
+        .status(200)
+        .json({ status: "Success", message: "Reservation updated" });
+    } catch (err) {
+      console.log(err);
+      if (err instanceof Error) {
+        res.status(500).send(err.message);
+      }
+    }
+  }
+
 }
