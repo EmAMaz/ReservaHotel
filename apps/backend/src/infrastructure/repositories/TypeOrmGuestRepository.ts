@@ -1,11 +1,11 @@
 import { GuestRepository, Guest as GuestI } from "domain-core";
-import { Guest } from "../../models/GuestModel";
+import { Guest as GuestModel } from "../../models/GuestModel";
 import { DataSource, Repository } from "typeorm";
 
 export class TypeOrmGuestRepostory implements GuestRepository {
-  private typeOrmGuestRepostory: Repository<Guest>;
+  private typeOrmGuestRepostory: Repository<GuestModel>;
   constructor(private dataSource: DataSource) {
-    this.typeOrmGuestRepostory = dataSource.getRepository(Guest);
+    this.typeOrmGuestRepostory = dataSource.getRepository(GuestModel);
   }
 
   async save(guest: GuestI): Promise<any> {
