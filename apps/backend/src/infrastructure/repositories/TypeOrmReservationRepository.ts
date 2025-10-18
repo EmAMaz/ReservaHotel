@@ -35,11 +35,11 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     return result
   }
 
-  update(id: string, reservation: Omit<ReservationI, "id">): Promise<void> {
-    throw new Error("Method not implemented.");
+  async update(id: string, reservation: Omit<ReservationI, "id">): Promise<void> {
+    await this.typeOrmReservationRepostory.update(id, reservation);
   }
 
-  delete(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async delete(id: string): Promise<void> {
+    await this.typeOrmReservationRepostory.delete(id);
   }
 }
