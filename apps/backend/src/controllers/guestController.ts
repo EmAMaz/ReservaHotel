@@ -77,4 +77,17 @@ export class GuestController {
       }
     }
   }
+
+  async delete(req: Request, res: Response): Promise<void> {
+    try {
+      if (!req.params.id) throw new Error("Id is null");
+      await this.guestUsesCases.delete(req.params.id);
+      res.status(200).json({ status: "Success", message: "Guest deleted" });
+    } catch (err) {
+      console.log(err);
+      if (err instanceof Error) {
+        res.status(500).send(err.message);
+      }
+    }
+  }
 }
