@@ -1,4 +1,4 @@
-import { Reservation, ReservationRepository } from "domain-core";
+import { Reservation as ReservationI, ReservationRepository } from "domain-core";
 import { Reservation as ReservationModel } from "../../models/ReservationModel";
 import { DataSource, Repository } from "typeorm";
 
@@ -8,12 +8,12 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     this.typeOrmReservationRepostory = dataSource.getRepository(ReservationModel);
   }
 
-  async save(reservation: Omit<Reservation, "id" | "roomId">): Promise<any> {
+  async save(reservation: Omit<ReservationI, "id" | "roomId">): Promise<ReservationI> {
     const result = await this.typeOrmReservationRepostory.save(reservation);
     return result;
   }
 
-  async getAll(): Promise<any> {
+  async getAll(): Promise<ReservationI[]> {
     const result = await this.typeOrmReservationRepostory.find({
       relations: {
         guest: true,
@@ -23,7 +23,7 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     return result;
   }
 
-  async getById(id: string): Promise<any> {
+  async getById(id: string): Promise<ReservationI> {
     const result = await this.typeOrmReservationRepostory.findOne({
       where: {id: Number(id)},
       relations: {
@@ -35,7 +35,7 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     return result
   }
 
-  update(id: string, reservation: Omit<any, "id">): Promise<void> {
+  update(id: string, reservation: Omit<ReservationI, "id">): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
