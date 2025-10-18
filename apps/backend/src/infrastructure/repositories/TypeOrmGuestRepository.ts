@@ -1,4 +1,4 @@
-import { GuestRepository, GuestUsesCases, Guest as GuestI } from "domain-core";
+import { GuestRepository, Guest as GuestI } from "domain-core";
 import { Guest } from "../../models/GuestModel";
 import { DataSource, Repository } from "typeorm";
 
@@ -8,12 +8,12 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     this.typeOrmGuestRepostory = dataSource.getRepository(Guest);
   }
 
-  async save(guest: any): Promise<any> {
+  async save(guest: GuestI): Promise<any> {
     const result = await this.typeOrmGuestRepostory.save(guest);
     return result;
   }
 
-  async getAll(): Promise<any> {
+  async getAll(): Promise<GuestI[]> {
     const result = await this.typeOrmGuestRepostory.find();
     return result;
   }
@@ -31,7 +31,7 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     return result;
   }
 
-  async update(id: string, guest: Omit<Guest, "id">): Promise<void> {
+  async update(id: string, guest: Omit<GuestI, "id">): Promise<void> {
     await this.typeOrmGuestRepostory.update(id, guest);
   }
 
