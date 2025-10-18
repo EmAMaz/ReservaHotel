@@ -1,4 +1,4 @@
-import { describe, test, expect, vi, Mock, afterEach } from "vitest";
+import { describe, test, expect, vi, afterEach } from "vitest";
 import { GuestRepository } from "../repository";
 import { GuestUsesCases } from "./guestUsesCases";
 import { Guest } from "../entities";
@@ -27,7 +27,7 @@ describe("GuestUsesCases", () => {
   });
 
   test("getAll debe devolver la lista de huéspedes", async () => {
-    (mockGuestRepository.getAll as Mock).mockResolvedValue([expectedGuest]);
+    vi.mocked(mockGuestRepository.getAll).mockResolvedValue([expectedGuest]);
 
     const result = await guestUsesCases.getAll();
 
