@@ -4,7 +4,7 @@ import { GuestRepository } from "../repository";
 export class GuestUsesCases implements GuestRepository {
   constructor(private guestRepository: GuestRepository) {}
 
-  async getAll(): Promise<Guest> {
+  async getAll(): Promise<Guest[]> {
     const result = await this.guestRepository.getAll();
     return result;
   }
