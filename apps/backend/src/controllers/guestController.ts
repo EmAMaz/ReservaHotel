@@ -56,4 +56,25 @@ export class GuestController {
       }
     }
   }
+
+  async update(req: Request, res: Response): Promise<void> {
+    try {
+      if (!req.params.id) throw new Error("Id is null");
+      if (!req.body) throw new Error("Data is null");
+      const { name, email, lastname } = req.body;
+      const guest: Omit<Guest, "id"> = {
+        name,
+        email,
+        lastname,
+      };
+      await this.guestUsesCases.update(req.params.id, guest);
+
+      res.status(200).json({ status: "Success", message: "Guest updated" });
+    } catch (err) {
+      console.log(err);
+      if (err instanceof Error) {
+        res.status(500).send(err.message);
+      }
+    }
+  }
 }
