@@ -68,6 +68,29 @@ export class RoomController {
     }
   }
 
+  async update(req: Request, res: Response): Promise<void> {
+    try {
+      if(!req.params.id) throw new Error("Id is null");
+      if (!req.body) throw new Error("Data is null");
+      const { roomNumber, type, capacity, description, image, price } = req.body;
+      const Room: Omit<Room, "id"> = {
+        roomNumber,
+        type,
+        capacity,
+        description,
+        image,
+        price,
+      };
+      await this.RoomUsesCases.update(req.params.id, Room);
+      res.status(200).json({ status: "Success", message: "Room updated" });
+    } catch (err) {
+      console.log(err);
+      if (err instanceof Error) {
+        res.status(500).send(err.message);
+      }
+    }
+  }
+
   async delete(req: Request, res: Response): Promise<void> {
     try {
       if (!req.params.id) throw new Error("Id is null");
