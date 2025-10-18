@@ -31,11 +31,11 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     return result;
   }
 
-  async update(id: string, guest: Omit<any, "id">): Promise<void> {
-    throw new Error("Method not implemented.");
+  async update(id: string, guest: Omit<Guest, "id">): Promise<void> {
+    await this.typeOrmGuestRepostory.update(id, guest);
   }
 
   async delete(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    await this.typeOrmGuestRepostory.delete(id)
   }
 }
