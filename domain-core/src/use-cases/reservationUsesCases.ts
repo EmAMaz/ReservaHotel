@@ -1,33 +1,37 @@
 import { Reservation } from "../entities/Reservation";
-import type { Room } from "../entities/Room";
+import { NotFoundError } from "../errors";
 import { ReservationRepository } from "../repository/ReservationRepository";
 
 export class ReservationUsesCases implements ReservationRepository {
-  constructor(private ReservationRepository: ReservationRepository) {}
+export class ReservationUsesCases {
+  constructor(private reservationRepository: ReservationRepository) {}
 
   async getAll(): Promise<Reservation[]> {
-    const result = await this.ReservationRepository.getAll();
+    const result = await this.reservationRepository.getAll();
     return result;
   }
 
-  async getById(id: string): Promise<Reservation> {
-    const result = await this.ReservationRepository.getById(id);
+  async getById(id: string): Promise<Reservation | null> {
+    const result = await this.reservationRepository.getById(id);
+    if(!result) throw new NotFoundError("Reservation not found");
     return result;
   }
 
-  async save(reservation: Omit<Reservation, "id">): Promise<Reservation> {
-    const result = await this.ReservationRepository.save(reservation);
-    return result;
+  async save(reservation: Omit<Reservation, "id">): Promise<void> {
+    await this.reservationRepository.save(reservation);
   }
 
-  async update(
-    id: string,
-    reservation: Omit<Reservation, "id">
-  ): Promise<void> {
-    await this.ReservationRepository.update(id, reservation);
+  async update(id: string,reservation: Omit<Reservation, "id">): Promise<void> {
+    const findById = await this.reservationRepository.getById(id);
+    if (!findById) throw new NotFoundError();
+
+    await this.reservationRepository.update(id, reservation);
   }
 
   async delete(id: string): Promise<void> {
-    await this.ReservationRepository.delete(id);
+    const findById = await this.reservationRepository.getById(id);
+    if (!findById) throw new NotFoundError();
+    
+    await this.reservationRepository.delete(id);
   }
 }
