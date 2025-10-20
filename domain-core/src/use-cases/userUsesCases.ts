@@ -1,7 +1,6 @@
 import { User } from "../entities/User";
 import { UserRepository } from "../repository/UserRepository";
 
-export class UserUsesCases implements UserRepository {
 export class UserUsesCases {
   constructor(private userRepository: UserRepository) {}
 
