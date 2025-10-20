@@ -30,7 +30,6 @@ export class TypeOrmReservationRepository implements ReservationRepository {
         room: true
       }
     })
-    if(!result) throw new Error("Reservation not found");
     return result
   }
 
