@@ -2,7 +2,7 @@ import { Guest } from "../entities/Guest";
 import { ConflictError, NotFoundError } from "../errors";
 import { GuestRepository } from "../repository";
 
-export class GuestUsesCases implements GuestRepository {
+export class GuestUsesCases {
   constructor(private guestRepository: GuestRepository) {}
 
   async getAll(): Promise<Guest[]> {
