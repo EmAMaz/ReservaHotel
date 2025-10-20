@@ -24,7 +24,10 @@ export class Reservation extends BaseEntity implements ReservationI {
   @Column({ type: "enum", enum: ReservationStatus })
   status: ReservationStatus;
 
-  @ManyToOne(() => Guest, (guest) => guest.reservations)
+  @ManyToOne(() => Guest, (guest) => guest.reservations, {
+    onDelete: "SET NULL",
+    nullable: true,
+  })
   @JoinColumn({ name: "guest_id" })
   guest: Guest;
 
