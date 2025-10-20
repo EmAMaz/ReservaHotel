@@ -2,7 +2,6 @@ import { Reservation } from "../entities/Reservation";
 import { NotFoundError } from "../errors";
 import { ReservationRepository } from "../repository/ReservationRepository";
 
-export class ReservationUsesCases implements ReservationRepository {
 export class ReservationUsesCases {
   constructor(private reservationRepository: ReservationRepository) {}
 
