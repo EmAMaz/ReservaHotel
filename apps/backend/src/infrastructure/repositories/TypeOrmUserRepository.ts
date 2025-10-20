@@ -1,5 +1,5 @@
 import { DataSource, Repository } from "typeorm";
-import { User, UserRepository } from "domain-core";
+import { AuthenticationError, ConflictError, User, UserRepository } from "domain-core";
 import { User as UserModel } from "../../models/UserModel";
 import { comparePassword } from "../../utils/cryptoPassword";
 
@@ -15,9 +15,8 @@ export class TypeOrmUserRepository implements UserRepository {
         email: User.email,
       },
     })
-    if(findForEmail) throw new Error("User registered");
-    const result = await this.typeOrmUserRepository.save(User);
-    return result;
+    if(findForEmail) throw new ConflictError("User registered");
+    await this.typeOrmUserRepository.save(User);
   }
 
   async login(email: string, password: string): Promise<User> {
@@ -26,8 +25,10 @@ export class TypeOrmUserRepository implements UserRepository {
         email: email,
       },
     });
-
-    if (!result) throw new Error("Credentials are incorrect");
+    if (!result) throw new AuthenticationError("User not registered in the system");
+    const resultPasswordCompare = comparePassword(password, result.password);
+    if(!resultPasswordCompare) throw new AuthenticationError("Credentials incorrect");
+    
     return result;
   }
 }
