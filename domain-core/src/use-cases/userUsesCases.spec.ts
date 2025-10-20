@@ -25,14 +25,14 @@ describe("UserUsesCases", () => {
   });
 
   test("save debe llamar al repositorio con el usuario ingresado y retornarlo", async () => {
-    vi.mocked(mockUserRepository).save.mockResolvedValue(expectedUser);
+    vi.mocked(mockUserRepository).save.mockResolvedValue(void 0);
 
     const result = await userUsesCases.save(expectedUser);
 
     expect(mockUserRepository.save).toHaveBeenCalledTimes(1);
     expect(mockUserRepository.save).toHaveBeenCalledWith(expectedUser);
 
-    expect(result).toEqual(expectedUser);
+    expect(result).toEqual(void 0);
   });
 
   test("login debe llamar al repositorio con el usuario correcto y retornar el usuario encontrado", async () => {
