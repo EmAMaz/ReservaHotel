@@ -8,9 +8,9 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     this.typeOrmReservationRepostory = dataSource.getRepository(ReservationModel);
   }
 
-  async save(reservation: Omit<ReservationI, "id" | "roomId">): Promise<ReservationI> {
     const result = await this.typeOrmReservationRepostory.save(reservation);
     return result;
+  async save(reservation: Omit<ReservationI, "id" | "roomId">): Promise<void> {
   }
 
   async getAll(): Promise<ReservationI[]> {
@@ -23,7 +23,7 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     return result;
   }
 
-  async getById(id: string): Promise<ReservationI> {
+  async getById(id: string): Promise<ReservationI | null> {
     const result = await this.typeOrmReservationRepostory.findOne({
       where: {id: Number(id)},
       relations: {
