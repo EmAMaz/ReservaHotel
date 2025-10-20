@@ -2,7 +2,6 @@ import type { Room } from "../entities/Room";
 import { NotFoundError } from "../errors";
 import { RoomRepository } from "../repository/RoomRepository";
 
-export class RoomUsesCases implements RoomRepository {
 export class RoomUsesCases {
   constructor(private roomRepository: RoomRepository) {}
 
