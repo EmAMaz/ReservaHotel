@@ -2,10 +2,12 @@ import { describe, test, expect, vi, afterEach } from "vitest";
 import { GuestRepository } from "../repository";
 import { GuestUsesCases } from "./guestUsesCases";
 import { Guest } from "../entities";
+import { NotFoundError } from "../errors";
 
 const mockGuestRepository: GuestRepository = {
   getAll: vi.fn(),
   getById: vi.fn(),
+  findByEmail: vi.fn(),
   save: vi.fn(),
   update: vi.fn(),
   delete: vi.fn(),
@@ -18,6 +20,7 @@ const expectedGuest: Guest = {
   name: "John",
   lastname: "Doe",
   email: "Gv6dA@example.com",
+  password: "password",
 };
 
 describe("GuestUsesCases", () => {
@@ -37,9 +40,9 @@ describe("GuestUsesCases", () => {
   });
 
   test("getById debe llamar al repositorio con el ID correcto y retornar el huésped encontrado", async () => {
-    const expectedId = "12";
+    const expectedId = "999";
 
-    vi.spyOn(mockGuestRepository, "getById").mockResolvedValue(expectedGuest);
+    vi.mocked(mockGuestRepository).getById.mockResolvedValue(expectedGuest);
 
     const result = await guestUsesCases.getById(expectedId);
 
@@ -49,25 +52,43 @@ describe("GuestUsesCases", () => {
     expect(result).toEqual(expectedGuest);
   });
 
-  test("save debe llamar al repositorio con el huésped correcto y retornar el huésped guardado", async () => {
-    vi.mocked(mockGuestRepository).save.mockResolvedValue(expectedGuest);
+  test("save debe llamar al repositorio con el huésped y guardalo", async () => {
+    vi.mocked(mockGuestRepository).save.mockResolvedValue(void 0);
 
     const result = await guestUsesCases.save(expectedGuest);
 
     expect(mockGuestRepository.save).toHaveBeenCalledTimes(1);
     expect(mockGuestRepository.save).toHaveBeenCalledWith(expectedGuest);
 
-    expect(result).toEqual(expectedGuest);
+    expect(result).toEqual(undefined);
   });
 
-  test("delete debe llamar al repositorio con el ID correcto", async () => {
+  test("si el metodo delete no encuentra el guest devuelve un throw", async () => {
     const expectedId = "1";
 
-    await guestUsesCases.delete(expectedId);
+    expect(guestUsesCases.delete(expectedId)).rejects.toThrow(NotFoundError);
+  });
+  test("si el metodo delete encuentra el guest, debe eliminarlo y devolver void o undefined", async () => {
+    const expectedId = "1";
+    const guestMocked: Guest = {
+      id: Number(expectedId),
+      name: "John",
+      lastname: "Doe",
+      email: "Gv6dA@example.com",
+      password: "password",
+    }
+
+    vi.mocked(mockGuestRepository).getById.mockResolvedValue(guestMocked);
+    vi.mocked(mockGuestRepository).delete.mockResolvedValue(undefined);
+
+    const result = await guestUsesCases.delete(expectedId);
+
+    expect(mockGuestRepository.getById).toHaveBeenCalledTimes(1);
+    expect(mockGuestRepository.getById).toHaveBeenCalledWith(expectedId);
 
     expect(mockGuestRepository.delete).toHaveBeenCalledTimes(1);
-    expect(mockGuestRepository.delete).toHaveBeenCalledWith(expectedId);
+    expect(mockGuestRepository.delete).toHaveBeenCalledWith(Number(expectedId));
 
-    expect(mockGuestRepository.delete).toBeCalledTimes(1);
+    expect(result).toBeUndefined();
   });
 });
