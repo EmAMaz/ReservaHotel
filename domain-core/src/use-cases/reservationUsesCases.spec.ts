@@ -20,7 +20,13 @@ const reservationUsesCases = new ReservationUsesCases(
 const expectReservation: Reservation = {
   id: 999,
   date: "2023-01-01",
-  guest: { id: 999, name: "John", lastname: "Doe", email: "Gv6dA@example.com" },
+  guest: {
+    id: 999,
+    name: "John",
+    lastname: "Doe",
+    email: "Gv6dA@example.com",
+    password: "password",
+  },
   room: {
     id: 999,
     roomNumber: 21,
@@ -67,10 +73,8 @@ describe("ReservationUsesCases", () => {
     expect(result).toEqual(expectReservation);
   });
 
-  test("save debe llamar al repositorio con la reservación correcta y retornar la reservación guardada", async () => {
-    vi.mocked(mockReservationRepository).save.mockResolvedValue(
-      expectReservation
-    );
+  test("save debe llamar al repositorio con la reservacion y guardalo", async () => {
+    vi.mocked(mockReservationRepository).save.mockResolvedValue(void 0);
 
     const result = await reservationUsesCases.save(expectReservation);
 
@@ -79,7 +83,7 @@ describe("ReservationUsesCases", () => {
       expectReservation
     );
 
-    expect(result).toEqual(expectReservation);
+    expect(result).toEqual(undefined);
   });
 
   test("delete debe llamar al repositorio con el ID correcto", async () => {
