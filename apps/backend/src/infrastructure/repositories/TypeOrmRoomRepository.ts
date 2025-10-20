@@ -9,9 +9,8 @@ export class TypeOrmRoomRepository implements RoomRepository {
     this.typeOrmRepository = dataSource.getRepository(RoomModel);
   }
 
-  async save(room: IRoom): Promise<IRoom> {
-    const result = await this.typeOrmRepository.save(room);
-    return result;
+  async save(room: IRoom): Promise<void> {
+    await this.typeOrmRepository.save(room);
   }
 
   async getAll(): Promise<IRoom[]> {
