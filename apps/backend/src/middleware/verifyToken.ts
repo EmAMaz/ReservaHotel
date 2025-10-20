@@ -1,4 +1,7 @@
 import { verify } from "jsonwebtoken";
+import { configDotenv } from "dotenv";
+
+configDotenv()
 
 export const verifyToken = (req: any, res: any, next: any) => {
     const header = req.header("Authorization") || "";
@@ -6,7 +9,7 @@ export const verifyToken = (req: any, res: any, next: any) => {
     if(!token) return res.status(401).json({message: "Token not provied"});
 
     try {
-        const payload = verify(token, "here_is_secret_key");
+        const payload = verify(token, process.env.SECRET_KEY || "");
         req.password = payload;
         next();
     } catch (error) {
