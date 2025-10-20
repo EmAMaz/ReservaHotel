@@ -9,7 +9,7 @@ export class TypeOrmUserRepository implements UserRepository {
     this.typeOrmUserRepository = dataSource.getRepository(UserModel);
   }
 
-  async save(User: Omit<User, "id">): Promise<User> {
+  async save(User: Omit<User, "id">): Promise<void> {
     const findForEmail = await this.typeOrmUserRepository.findOne({
       where: {
         email: User.email,
