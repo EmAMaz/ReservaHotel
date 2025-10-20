@@ -1,7 +1,6 @@
 import { DataSource, Repository } from "typeorm";
 import { Room as IRoom, RoomRepository } from "domain-core";
 import { Room as RoomModel } from "../../models/RoomModel";
-import { Reservation } from "src/models/ReservationModel";
 
 export class TypeOrmRoomRepository implements RoomRepository {
   private typeOrmRepository: Repository<RoomModel>;
