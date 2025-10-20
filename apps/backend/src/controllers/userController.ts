@@ -1,15 +1,18 @@
-import { User, UserUsesCases } from "domain-core";
+import { AppError, User, UserUsesCases, ValidationError } from "domain-core";
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
-import { comparePassword, encryptPassword } from "../utils/cryptoPassword";
+import { encryptPassword } from "../utils/cryptoPassword";
 import { withOutPassword } from "../utils/withOutPassword";
+import { configDotenv } from "dotenv";
+
+configDotenv()
 
 export class UserController {
   constructor(private userUsesCases: UserUsesCases) {}
 
   async create(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.body) throw new Error("Data is null");
+      if (!req.body) throw new ValidationError();
       const { name, email, lastname, password, role } = req.body;
 
       const user: Omit<User, "id"> = {
@@ -21,31 +24,33 @@ export class UserController {
       };
 
       await this.userUsesCases.save(user);
-      res
-        .status(201)
-        .json({ status: "Success", message: "User created" });
-    } catch (err) {
-      console.log(Error);
-      if (err instanceof Error) {
-        res.status(500).send(err.message);
+      res.status(201).json({ message: "User created" });
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({
+          error: error.name,
+          message: error.message,
+        });
       }
+      console.log(error);
+      res.status(500).json({
+        error: "InternalServerError",
+        message: "An unexpected error occurred.",
+      });
     }
   }
 
   async login(req: Request, res: Response): Promise<void> {
     if (!req.body) throw new Error("Data is null");
     try {
+      if(!req.body || Object.keys(req.body).length === 0) throw new ValidationError(); 
       const { email, password } = req.body;
-      if (!email || !password) throw new Error("Email or password is null");
 
       const result = await this.userUsesCases.login(email, password);
 
-      const resultPasswordCompare = comparePassword(password, result.password);
-      if (!resultPasswordCompare) res.status(401).json({ message: "Credentials invalid" });
-
       const data = withOutPassword(result);
 
-      const token = sign({ data }, "here_is_secret_key", { expiresIn: "1h" });
+      const token = sign({ data }, process.env.API_KEY || "", { expiresIn: "1h" });
 
       res.status(200).json({
         status: "Success",
@@ -53,24 +58,36 @@ export class UserController {
         data,
         token,
       });
-    } catch (err) {
-      console.log(Error);
-      if (err instanceof Error) {
-        res.status(500).send(err.message);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({
+          error: error.name,
+          message: error.message,
+        });
       }
+      console.log(error);
+      res.status(500).json({
+        error: "InternalServerError",
+        message: "An unexpected error occurred.",
+      });
     }
   }
 
   async authenticate(req: Request, res: Response): Promise<void> {
     try {
-      res
-        .status(200)
-        .json({ status: "Success", message: "User authenticated" });
-    } catch (err) {
-      console.log(Error);
-      if (err instanceof Error) {
-        res.status(500).send(err.message);
-      }
-    }
+      res.status(200).json({ message: "User authenticated" });
+    } catch (error) {
+          if (error instanceof AppError) {
+            res.status(error.statusCode).json({
+              error: error.name,
+              message: error.message,
+            });
+          }
+          console.log(error);
+          res.status(500).json({
+            error: "InternalServerError",
+            message: "An unexpected error occurred.",
+          });
+        }
   }
 }
