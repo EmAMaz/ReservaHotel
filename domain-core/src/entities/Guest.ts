@@ -3,4 +3,5 @@ export interface Guest{
     name: string;
     lastname: string;
     email: string;
+    password: string;
 }
