@@ -8,8 +8,8 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     this.typeOrmGuestRepostory = dataSource.getRepository(GuestModel);
   }
 
-  async save(guest: GuestI): Promise<any> {
     const result = await this.typeOrmGuestRepostory.save(guest);
+  async save(guest: GuestI): Promise<void> {
     return result;
   }
 
@@ -18,7 +18,7 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     return result;
   }
 
-  async getById(id: string): Promise<GuestI> {
+  async getById(id: string): Promise<GuestI | null> {
     const result = await this.typeOrmGuestRepostory.findOne({
       where: {
         id: Number(id),
@@ -35,7 +35,7 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     await this.typeOrmGuestRepostory.update(id, guest);
   }
 
-  async delete(id: string): Promise<void> {
     await this.typeOrmGuestRepostory.delete(id)
+  async delete(id: number): Promise<void> {
   }
 }
