@@ -16,6 +16,9 @@ export class Guest extends BaseEntity {
     @Column()
     email: string;
 
-    @OneToMany(() => Reservation, (reservation: Reservation) => reservation.guest)
+    @Column()
+    password: string;
+
+    @OneToMany(() => Reservation, (reservation: Reservation) => reservation.guest, { onDelete: "CASCADE" })
     reservations: Reservation[];
 }
