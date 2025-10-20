@@ -1,4 +1,4 @@
-import { GuestRepository, Guest as GuestI } from "domain-core";
+import { GuestRepository, Guest as GuestI, ConflictError } from "domain-core";
 import { Guest as GuestModel } from "../../models/GuestModel";
 import { DataSource, Repository } from "typeorm";
 
@@ -8,8 +8,22 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     this.typeOrmGuestRepostory = dataSource.getRepository(GuestModel);
   }
 
-    const result = await this.typeOrmGuestRepostory.save(guest);
   async save(guest: GuestI): Promise<void> {
+    const findForEmail = await this.typeOrmGuestRepostory.findOne({
+      where: {
+        email: guest.email,
+      },
+    });
+    if (findForEmail) throw new ConflictError("Guest registered");
+    await this.typeOrmGuestRepostory.save(guest);
+  }
+
+  async findByEmail(email: string): Promise<GuestI | null> {
+    const result = await this.typeOrmGuestRepostory.findOne({
+      where: {
+        email,
+      },
+    });
     return result;
   }
 
@@ -27,7 +41,6 @@ export class TypeOrmGuestRepostory implements GuestRepository {
         reservations: true,
       },
     });
-    if(!result) throw new Error("Guest not found");
     return result;
   }
 
@@ -35,7 +48,7 @@ export class TypeOrmGuestRepostory implements GuestRepository {
     await this.typeOrmGuestRepostory.update(id, guest);
   }
 
-    await this.typeOrmGuestRepostory.delete(id)
   async delete(id: number): Promise<void> {
+    await this.typeOrmGuestRepostory.delete(id);
   }
 }
