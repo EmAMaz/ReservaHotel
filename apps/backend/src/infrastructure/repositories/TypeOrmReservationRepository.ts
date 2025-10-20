@@ -8,9 +8,8 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     this.typeOrmReservationRepostory = dataSource.getRepository(ReservationModel);
   }
 
-    const result = await this.typeOrmReservationRepostory.save(reservation);
-    return result;
   async save(reservation: Omit<ReservationI, "id" | "roomId">): Promise<void> {
+    await this.typeOrmReservationRepostory.save(reservation);
   }
 
   async getAll(): Promise<ReservationI[]> {
