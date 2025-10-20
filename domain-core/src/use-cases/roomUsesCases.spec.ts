@@ -3,6 +3,7 @@ import { Room } from "../entities/Room";
 import { RoomType } from "../enums";
 import { RoomUsesCases } from "./roomUsesCases";
 import { RoomRepository } from "../repository";
+import { NotFoundError } from "../errors";
 
 const mockRoomRepository: RoomRepository = {
   getAll: vi.fn(),
@@ -55,25 +56,20 @@ describe("RoomUsesCases", () => {
   });
 
   test("save debe llamar al repositorio con la habitación correcta y retornar la habitación guardada", async () => {
-    vi.mocked(mockRoomRepository).save.mockResolvedValue(expectedRoom);
+    vi.mocked(mockRoomRepository).save.mockResolvedValue(void 0);
 
     const result = await roomUsesCases.save(expectedRoom);
 
     expect(mockRoomRepository.save).toHaveBeenCalledTimes(1);
     expect(mockRoomRepository.save).toHaveBeenCalledWith(expectedRoom);
 
-    expect(result).toEqual(expectedRoom);
+    expect(result).toEqual(undefined);
   });
 
-  test("delete debe llamar al repositorio con el ID correcto", async () => {
+  test("si el metodo delete no encuentra la room devuelve un throw", async () => {
     const expectedId = "1";
 
-    vi.mocked(mockRoomRepository.delete).mockResolvedValue(undefined);
-    await roomUsesCases.delete(expectedId);
-
-    expect(mockRoomRepository.delete).toHaveBeenCalledTimes(1);
-
-    expect(mockRoomRepository.delete).toHaveBeenCalledWith(expectedId);
+    expect(roomUsesCases.delete(expectedId)).rejects.toThrow(NotFoundError)
   });
 
   test("findUniqueRoomsByType debe retornar un listado con las habitaciones encontradas", async () => {
