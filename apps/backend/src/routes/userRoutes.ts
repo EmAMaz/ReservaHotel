@@ -7,6 +7,7 @@ export function createUserRouter(controller: UserController): Router {
  
   router.post("/", controller.create.bind(controller));
   router.post("/login", controller.login.bind(controller));
-  router.post("/authenticate", verifyToken, controller.authenticate.bind(controller));
+  router.get("/authenticate", controller.authenticate.bind(controller));
+  router.post("/logout", controller.logout.bind(controller));
   return router;
 }
