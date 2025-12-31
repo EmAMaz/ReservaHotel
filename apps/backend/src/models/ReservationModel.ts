@@ -11,7 +11,7 @@ import {
   RelationId,
 } from "typeorm";
 import { Room } from "./RoomModel";
-import { Guest } from "./GuestModel";
+import { User } from "./UserModel";
 
 @Entity("reservations")
 export class Reservation extends BaseEntity implements ReservationI {
@@ -24,12 +24,12 @@ export class Reservation extends BaseEntity implements ReservationI {
   @Column({ type: "enum", enum: ReservationStatus })
   status: ReservationStatus;
 
-  @ManyToOne(() => Guest, (guest) => guest.reservations, {
+  @ManyToOne(() => User, (user) => user.reservations, {
     onDelete: "SET NULL",
     nullable: true,
   })
-  @JoinColumn({ name: "guest_id" })
-  guest: Guest;
+  @JoinColumn({ name: "user_id"})
+  user: User;
 
   @ManyToOne(() => Room, (room) => room.reservations)
   @JoinColumn({ name: "room_id" })
