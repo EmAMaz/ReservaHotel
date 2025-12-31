@@ -1,11 +1,17 @@
-import { AppError, User, UserUsesCases, ValidationError } from "domain-core";
+import {
+  AppError,
+  AuthenticationError,
+  User,
+  UserUsesCases,
+  ValidationError,
+} from "domain-core";
 import { Request, Response } from "express";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 import { encryptPassword } from "../utils/cryptoPassword";
 import { withOutPassword } from "../utils/withOutPassword";
 import { configDotenv } from "dotenv";
 
-configDotenv()
+configDotenv();
 
 export class UserController {
   constructor(private userUsesCases: UserUsesCases) {}
@@ -43,21 +49,31 @@ export class UserController {
   async login(req: Request, res: Response): Promise<void> {
     if (!req.body) throw new Error("Data is null");
     try {
-      if(!req.body || Object.keys(req.body).length === 0) throw new ValidationError(); 
+      if (!req.body || Object.keys(req.body).length === 0)
+        throw new ValidationError();
       const { email, password } = req.body;
 
       const result = await this.userUsesCases.login(email, password);
 
       const data = withOutPassword(result);
 
-      const token = sign({ data }, process.env.API_KEY || "", { expiresIn: "1h" });
-
-      res.status(200).json({
-        status: "Success",
-        message: "User logged in",
-        data,
-        token,
+      const token = sign({ data }, process.env.API_KEY || "", {
+        expiresIn: "1h",
       });
+
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "strict",
+        })
+        .status(200)
+        .json({
+          status: "Success",
+          message: "User logged in",
+          data,
+          token,
+        });
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({
@@ -74,20 +90,42 @@ export class UserController {
   }
 
   async authenticate(req: Request, res: Response): Promise<void> {
+    const token = req.cookies.access_token;
+    if (!token) res.status(403).json({ message: "User not authenticated", data: null });
     try {
-      res.status(200).json({ message: "User authenticated" });
+      const data = verify(token, process.env.API_KEY || "");
+      res.status(200).json({ message: "User authenticated", data });
     } catch (error) {
-          if (error instanceof AppError) {
-            res.status(error.statusCode).json({
-              error: error.name,
-              message: error.message,
-            });
-          }
-          console.log(error);
-          res.status(500).json({
-            error: "InternalServerError",
-            message: "An unexpected error occurred.",
-          });
-        }
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({
+          error: error.name,
+          message: error.message,
+        });
+      }
+      console.log(error);
+      res.status(500).json({
+        error: "InternalServerError",
+        message: "An unexpected error occurred.",
+      });
+    }
+  }
+
+  async logout(req: Request, res: Response): Promise<void> {
+    try {
+      res.clearCookie("access_token");
+      res.status(200).json({ message: "User logged out" });
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({
+          error: error.name,
+          message: error.message,
+        });
+      }
+      console.log(error);
+      res.status(500).json({
+        error: "InternalServerError",
+        message: "An unexpected error occurred.",
+      });
+    }
   }
 }

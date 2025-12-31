@@ -13,21 +13,12 @@ export class TypeOrmRoomRepository implements RoomRepository {
   }
 
   async getAll(): Promise<IRoom[]> {
-    const result = await this.typeOrmRepository.find();
+    const result = await this.typeOrmRepository.find({
+      order: {
+        price: "ASC",
+      },
+    });
     return result;
-  }
-
-  async findUniqueRoomsByType(): Promise<IRoom[]> {
-    const result = this.typeOrmRepository.createQueryBuilder("r_sub")
-      .select("MIN(r_sub.id)", "min_id")
-      .groupBy("r_sub.type")
-      .getQuery();
-
-    const uniqueRooms = await this.typeOrmRepository.createQueryBuilder("r")
-      .where(`r.id IN (${result})`)
-      .getMany();
-
-    return uniqueRooms;
   }
 
   async getById(id: string): Promise<IRoom> {

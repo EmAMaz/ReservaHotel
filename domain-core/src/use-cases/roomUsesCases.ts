@@ -10,10 +10,6 @@ export class RoomUsesCases {
     return result;
   }
 
-  async findUniqueRoomsByType(): Promise<Room[]> {
-    const result = await this.roomRepository.findUniqueRoomsByType();
-    return result;
-  }
 
   async getById(id: string): Promise<Room | null> {
     const result = await this.roomRepository.getById(id);

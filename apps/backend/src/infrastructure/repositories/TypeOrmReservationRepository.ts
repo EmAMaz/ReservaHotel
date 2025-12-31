@@ -15,8 +15,11 @@ export class TypeOrmReservationRepository implements ReservationRepository {
   async getAll(): Promise<ReservationI[]> {
     const result = await this.typeOrmReservationRepostory.find({
       relations: {
-        guest: true,
+        user: true,
         room: true
+      },
+      order: {
+        priceTotal: "ASC"
       }
     });
     return result;
@@ -26,11 +29,22 @@ export class TypeOrmReservationRepository implements ReservationRepository {
     const result = await this.typeOrmReservationRepostory.findOne({
       where: {id: Number(id)},
       relations: {
-        guest: true,
+        user: true,
         room: true
       }
     })
     return result
+  }
+
+  async getByUserId(userId: string): Promise<ReservationI[]> {
+    const result = await this.typeOrmReservationRepostory.find({
+      where: { user : { id: Number(userId) } },
+      relations: {
+        user: true,
+        room: true
+      }
+    });
+    return result;
   }
 
   async update(id: string, reservation: Omit<ReservationI, "id">): Promise<void> {

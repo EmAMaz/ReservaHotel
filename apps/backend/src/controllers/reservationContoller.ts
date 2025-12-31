@@ -7,12 +7,12 @@ export class ReservationController {
   async create(req: Request, res: Response): Promise<void> {
     try {
       if (!req.body) throw new ValidationError();
-      const { date, status, guest, room, priceTotal } = req.body;
+      const { date, status, user, room, priceTotal } = req.body;
 
       const reservation: Omit<Reservation, "id"> = {
         date,
         status,
-        guest,
+        user,
         room,
         priceTotal,
       };
@@ -77,14 +77,34 @@ export class ReservationController {
     }
   }
 
+  async getByUserId(req: Request, res: Response): Promise<void> {
+    try {
+      if (!req.params.id) throw new ValidationError(); 
+      const result = await this.reservationUsesCases.getByUserId(req.params.id);
+      res.status(200).json({ message: "Reservations found", data: result });
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({
+          error: error.name,
+          message: error.message,
+        });
+      }
+      console.log(error);
+      res.status(500).json({
+        error: "InternalServerError",
+        message: "An unexpected error occurred.",
+      });
+    }
+  }
+
   async update(req: Request, res: Response): Promise<void> {
     try {
       if(!req.body || Object.keys(req.body).length === 0 || !req.params.id) throw new ValidationError(); 
-      const { date, status, guest, room, priceTotal } = req.body;
+      const { date, status, user, room, priceTotal } = req.body;
       const reservation: Omit<Reservation, "id"> = {
         date,
         status,
-        guest,
+        user,
         room,
         priceTotal,
       };

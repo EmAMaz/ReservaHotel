@@ -1,5 +1,4 @@
 import { Room } from "../models/RoomModel";
-import { Guest } from "../models/GuestModel";
 import { Reservation } from "../models/ReservationModel";
 import { User } from "../models/UserModel";
 import { DataSource } from "typeorm";
@@ -16,7 +15,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE ? process.env.DB_DATABASE : "undefined",
   synchronize: true,
   logging: true,
-  entities: [Room, Guest, Reservation, User],
+  entities: [Room, Reservation, User],
   subscribers: [],
   migrations: [],
 });
