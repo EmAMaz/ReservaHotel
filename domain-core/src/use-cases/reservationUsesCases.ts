@@ -16,6 +16,11 @@ export class ReservationUsesCases {
     return result;
   }
 
+  async getByUserId(userId: string): Promise<Reservation[]> {
+    const result = await this.reservationRepository.getByUserId(userId);
+    return result;
+  }
+
   async save(reservation: Omit<Reservation, "id">): Promise<void> {
     await this.reservationRepository.save(reservation);
   }

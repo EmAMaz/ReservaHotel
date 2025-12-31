@@ -8,7 +8,6 @@ import { NotFoundError } from "../errors";
 const mockRoomRepository: RoomRepository = {
   getAll: vi.fn(),
   getById: vi.fn(),
-  findUniqueRoomsByType: vi.fn(),
   save: vi.fn(),
   update: vi.fn(),
   delete: vi.fn(),
@@ -72,16 +71,4 @@ describe("RoomUsesCases", () => {
     expect(roomUsesCases.delete(expectedId)).rejects.toThrow(NotFoundError)
   });
 
-  test("findUniqueRoomsByType debe retornar un listado con las habitaciones encontradas", async () => {
-    vi.mocked(mockRoomRepository.findUniqueRoomsByType).mockResolvedValue([
-      expectedRoom,
-    ]);
-
-    const result = await roomUsesCases.findUniqueRoomsByType();
-
-    expect(mockRoomRepository.findUniqueRoomsByType).toHaveBeenCalledTimes(1);
-    expect(mockRoomRepository.findUniqueRoomsByType).toHaveBeenCalledWith();
-
-    expect(result).toEqual([expectedRoom]);
-  });
 });
