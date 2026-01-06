@@ -3,28 +3,26 @@ name: reserva-hotel
 services:
   db:
     image: mysql
-    restart: always
-    env_file:
-      - ./apps/backend/.env
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - 3306:3306
     healthcheck:
-      test:
-        [
-          "CMD",
-          "mysqladmin",
-          "ping",
-          "-h",
-          "localhost",
-          "-u$$MYSQL_USER",
-          "-p$$MYSQL_PASSWORD",
-        ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - reserva-hotel-storage:/var/lib/mysql
 
   backend:
-    build: ./apps/backend
+    build: 
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
     container_name: reserva-hotel-backend
     image: reserva-hotel-backend:latest
     env_file:
@@ -34,9 +32,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - reserva-hotel-storage:/app/apps/storage
 
   frontend:
-    build: ./apps/frontend
+    build: 
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
     container_name: reserva-hotel-frontend
     env_file:
       - ./apps/frontend/.env
@@ -44,3 +46,10 @@ services:
       - "5173:5173"
     depends_on:
       - backend
+    volumes:
+      - reserva-hotel-storage:/app/apps/storage
+      - /app/apps/frontend/node_modules
+      - /app/domain-core/node_modules
+volumes:
+  reserva-hotel-storage:
+    driver: local
