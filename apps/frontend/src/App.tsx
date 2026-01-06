@@ -8,7 +8,7 @@ import { Register } from "./components/auth/Register";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { Admin } from "./components/Admin";
 import { ReservationMade } from "./components/ReservationMade";
-import { RoomForm } from "./components/editPage";
+import { RoomForm } from "./components/EditPage";
 
 function App() {
   return (

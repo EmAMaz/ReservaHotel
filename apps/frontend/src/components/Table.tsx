@@ -28,7 +28,7 @@ export const Table = (props: Props) => {
         {props.listRooms.data.map((room: any) => (
           <div key={room.id}>
             <img
-              src={!room.image ? room.image : "./rooms/img-standard.png.webp"}
+              src={room.image}
             />
             <p><a href={`#${room.id}`}>{room.description}</a></p>
             <span>${room.price.toLocaleString()}</span>

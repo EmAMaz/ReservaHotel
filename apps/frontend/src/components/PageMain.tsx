@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useGetAllRooms } from "../hooks/api/useGetAllRooms";
 import { Table } from "./Table";
 import { LoginModal } from "./LoginModal";
@@ -19,7 +19,7 @@ export const PageMain = (props: Props) => {
   const handleRegister = () => {
     navigate("/register");
   };
-  const handleReservationAttempt = (id: string) => {
+  const handleReservationAttempt = () => {
     setShowModal(true);
   };
   const handleLoginRedirect = () => {
@@ -55,7 +55,7 @@ export const PageMain = (props: Props) => {
               className="flex border-2 border-black/50 h-[500px]"
             >
               <img
-                src={!room.image ? room.image : "./rooms/img-standard.png.webp"}
+                src={room.image}
               />
               <div className="flex flex-col justify-between p-8">
                 <div className="flex flex-col gap-2">
@@ -67,7 +67,7 @@ export const PageMain = (props: Props) => {
                 </div>
                 <button
                   className="flex bg-green-600 text-center justify-center text-white p-2 cursor-pointer"
-                  onClick={() => handleReservationAttempt(room.id)}
+                  onClick={() => handleReservationAttempt()}
                 >
                   Reservar
                 </button>
