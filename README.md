@@ -33,12 +33,14 @@ Follow these steps to get the API up and running in your local environment.
 ```
 1.2 Configure Environment Variables
 ```bash
+    SECRET_KEY=****
     PORT=****
     DB_HOST=****
     DB_PORT=****
     DB_USER=****
     DB_PASSWORD=****
     DB_DATABASE=****
+    API_KEY=****
 ```
 1.3 Run the Application - Development Mode
 ```bash
@@ -51,4 +53,17 @@ This project uses Vitest for unit testing. The tests are designed to verify the 
 ```bash
   npm run vitest
 ```
+
+## With Docker
+
+To run this project with Docker, it is essential to add the following environment variables to your .env file (located in the root directory).
+
+`DB_HOST`
+
+`DB_USER`
+
+`DB_PASSWORD`
+
+`DB_DATABASE`
+
 
