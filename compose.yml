@@ -35,8 +35,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - reserva-hotel-storage:/app/apps/storage
 
   frontend:
     build: 
@@ -44,18 +42,12 @@ services:
       dockerfile: ./apps/frontend/Dockerfile
     container_name: reserva-hotel-frontend
     image: reserva-hotel-frontend:latest
-    env_file:
-      - ./apps/frontend/.env
     ports:
       - "80:80"
     restart: unless-stopped
     depends_on:
       - backend
-    volumes:
-      - reserva-hotel-storage:/app/apps/storage
 
 volumes:
-  reserva-hotel-storage:
-    driver: local
   reserva-hotel-mysql-data:
     driver: local
