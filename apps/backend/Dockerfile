@@ -12,4 +12,4 @@ COPY apps/backend/ ./apps/backend/
 
 WORKDIR /app/apps/backend
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]
