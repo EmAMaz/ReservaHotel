@@ -4,11 +4,13 @@ services:
   db:
     image: mysql
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - 3306:3306
     healthcheck:
@@ -17,7 +19,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - reserva-hotel-storage:/var/lib/mysql
+      - reserva-hotel-mysql-data:/var/lib/mysql
 
   backend:
     build: 
@@ -29,6 +31,7 @@ services:
       - ./apps/backend/.env
     ports:
       - 3000:3000
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
@@ -40,16 +43,19 @@ services:
       context: .
       dockerfile: ./apps/frontend/Dockerfile
     container_name: reserva-hotel-frontend
+    image: reserva-hotel-frontend:latest
     env_file:
       - ./apps/frontend/.env
     ports:
-      - "5173:5173"
+      - "80:80"
+    restart: unless-stopped
     depends_on:
       - backend
     volumes:
       - reserva-hotel-storage:/app/apps/storage
-      - /app/apps/frontend/node_modules
-      - /app/domain-core/node_modules
+
 volumes:
   reserva-hotel-storage:
+    driver: local
+  reserva-hotel-mysql-data:
     driver: local
