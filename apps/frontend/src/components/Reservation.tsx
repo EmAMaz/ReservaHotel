@@ -5,16 +5,7 @@ import { useReservation } from "../hooks/api/useReservation";
 import { useUserAuth } from "../hooks/api/useAuthUser";
 import Button from "./Button/Button";
 
-interface ReservationI {
-  id: number;
-  date: string;
-  status: string;
-  guest: number;
-  room: number;
-  priceTotal: number;
-}
-
-export const Reservation = (props: any) => {
+export const Reservation = () => {
   let { categoryId } = useParams();
   const [isChecked, setIsChecked] = useState(false);
   const [priceTotal, setPriceTotal] = useState(0);
@@ -22,7 +13,7 @@ export const Reservation = (props: any) => {
   const [roomId, setRoomId] = useState(0);
   const [errorInvalidDate, setErrorInvalidDate] = useState(false);
    const navigate = useNavigate();
-  const { reservationRoom, isPending, isError } = useReservation(() => {
+  const { reservationRoom } = useReservation(() => {
     toast.success("Reserva realizada");
   });
    const { userAuth } = useUserAuth();

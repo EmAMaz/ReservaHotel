@@ -1,11 +1,6 @@
 import { useEffect } from "react";
 import type { RoomResponseAPI } from "../utils/types";
 
-interface Room {
-  message?: string;
-  data?: any;
-}
-
 type Props = {
   listRooms?: RoomResponseAPI;
   isLoading?: boolean;

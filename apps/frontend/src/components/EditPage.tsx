@@ -14,15 +14,10 @@ interface RoomFormData {
   price: number | "";
 }
 
-interface RoomFormProps {
-  onSubmit: (data: RoomFormData) => void;
-  isLoading?: boolean;
-}
-
 export const RoomForm = () => {
   let { roomId } = useParams();
   const navigate = useNavigate();
-  const { room, data, isPending, isError } = useGetRoomById(() => {});
+  const { room, data } = useGetRoomById(() => {});
   const [idSome, setIdSome] = useState<string>("");
   const { editRoom, isPending: isPendingEdit } = useEditRoom(() => {
     setTimeout(() => {

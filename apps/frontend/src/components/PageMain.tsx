@@ -5,9 +5,7 @@ import { LoginModal } from "./LoginModal";
 import { useNavigate } from "react-router";
 import { Header } from "./Header/Header";
 
-type Props = {};
-
-export const PageMain = (props: Props) => {
+export const PageMain = () => {
   const [showModal, setShowModal] = useState(false);
   const { allRooms, isLoading, isError } = useGetAllRooms();
   const navigate = useNavigate();

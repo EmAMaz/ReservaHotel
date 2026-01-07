@@ -21,9 +21,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const apiService = new ApiService();
 
-  // Derivación de estado
-  const isAuthenticated = !!user;
-
   // Funciones de manejo
   const login = (userData: User) => {
     setUser(userData);
